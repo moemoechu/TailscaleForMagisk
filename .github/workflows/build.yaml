@@ -16,7 +16,7 @@ jobs:
       - name: Checkout tailscale
         uses: actions/checkout@v4
         with:
-          repository: tailscale/tailscale
+          repository: moemoechu/tailscale
           ref: v${{ vars.TAILSCALE_BRANCH }}
           path: tailscale
       - name: apply patch & build
