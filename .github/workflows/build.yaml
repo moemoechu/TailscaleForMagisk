@@ -23,6 +23,8 @@ jobs:
         run: |
           cd tailscale
           patch -p1 < ../TailscaleForMagisk/feature_support_android_lastest.patch
+          git config --global user.email "build@github.com"
+          git config --global user.name "build"
           git add -A && git commit -m "commit"
           make buildandroid
           cp /home/runner/go/bin/android_arm64/tailscale ../TailscaleForMagisk/src
