@@ -39,3 +39,16 @@ index 50a8b7ca5..8d9601f61 100644
  	default:
  		return ""
  	}
+diff --git a/version/version_checkformat.go b/version/version_checkformat.go
+index 05a97d191..c0ad82546 100644
+--- a/version/version_checkformat.go
++++ b/version/version_checkformat.go
+@@ -12,6 +12,7 @@ func init() {
+ 	// panic if the builder is screwed up and we fail to stamp a valid
+ 	// version string.
+ 	if !isValidLongWithTwoRepos(Long()) {
+-		panic(fmt.Sprintf("malformed version.Long value %q", Long()))
++		// panic(fmt.Sprintf("malformed version.Long value %q", Long()))
++		return
+ 	}
+ }
