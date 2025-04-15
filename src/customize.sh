@@ -35,7 +35,7 @@ if [ ! -d "${service_dir}" ]; then
   mkdir -p "${service_dir}"
 fi
 
-ui_print "- Installing ZerotierOne for Magisk"
+ui_print "- Installing Tailscale for Magisk"
 
 if [ ! -d "/data/adb/tailscale" ]; then
   mkdir -p /data/adb/tailscale
@@ -48,7 +48,18 @@ mkdir -p $MODPATH$PATH
 mv -f $MODPATH/tailscale $MODPATH$PATH
 mv -f $MODPATH/tailscale-sv $MODPATH$PATH
 mv -f $MODPATH/tailscaled $MODPATH$PATH
-  
+
+ui_print "- Checking resolv.conf"
+if [ ! -f "/etc/resolv.conf" ]; then
+  ui_print "- /etc/resolv.conf not found, creating a new one"
+  mkdir -p $MODPATH/system/etc
+  echo "nameserver 1.1.1.1" > $MODPATH/system/etc/resolv.conf
+  echo "nameserver 1.0.0.1" >> $MODPATH/system/etc/resolv.conf
+  set_perm $MODPATH/system/etc/resolv.conf 0 0 0644
+else
+  ui_print "- /etc/resolv.conf already exists"
+fi
+
 ui_print "- Setting permissions"
 set_perm_recursive $MODPATH 0 0 0755 0644
 set_perm ${service_dir}/tailscale_service.sh  0  0  0755
