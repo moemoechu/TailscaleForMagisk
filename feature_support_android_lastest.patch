@@ -40,10 +40,18 @@ index 50a8b7ca5..8d9601f61 100644
  		return ""
  	}
 diff --git a/version/version_checkformat.go b/version/version_checkformat.go
-index 05a97d191..c0ad82546 100644
+index 05a97d191..8bc49888f 100644
 --- a/version/version_checkformat.go
 +++ b/version/version_checkformat.go
-@@ -12,6 +12,7 @@ func init() {
+@@ -5,13 +5,14 @@
+ 
+ package version
+ 
+-import "fmt"
++// import "fmt"
+ 
+ func init() {
+ 	// For official Android builds using the tailscale_go toolchain,
  	// panic if the builder is screwed up and we fail to stamp a valid
  	// version string.
  	if !isValidLongWithTwoRepos(Long()) {
