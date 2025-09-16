@@ -1,44 +1,30 @@
-diff --git a/Makefile b/Makefile
-index 30ac5327a..f6f240ed3 100644
---- a/Makefile
-+++ b/Makefile
-@@ -43,6 +43,9 @@ build386: ## Build tailscale CLI for linux/386
- buildlinuxarm: ## Build tailscale CLI for linux/arm
- 	GOOS=linux GOARCH=arm ./tool/go install tailscale.com/cmd/tailscale tailscale.com/cmd/tailscaled
- 
-+buildandroid: ## Build tailscale CLI for android/arm
-+	GOOS=android GOARCH=arm64 ./tool/go install tailscale.com/cmd/tailscale tailscale.com/cmd/tailscaled
-+
- buildwasm: ## Build tailscale CLI for js/wasm
- 	GOOS=js GOARCH=wasm ./tool/go install ./cmd/tsconnect/wasm ./cmd/tailscale/cli
- 
 diff --git a/paths/paths.go b/paths/paths.go
-index 28c3be02a..6c28e0bc0 100644
+index 6c9c3fa6c..0a059389f 100644
 --- a/paths/paths.go
 +++ b/paths/paths.go
-@@ -30,6 +30,9 @@ func DefaultTailscaledSocket() string {
+@@ -31,6 +31,9 @@ func DefaultTailscaledSocket() string {
  	if runtime.GOOS == "plan9" {
  		return "/srv/tailscaled.sock"
  	}
-+	if runtime.GOOS == "android" {
++	if runtime.GOOS == "linux" {
 +		return "/data/adb/tailscale/tailscaled.sock"
 +	}
  	switch distro.Get() {
  	case distro.Synology:
  		if distro.DSMVersion() == 6 {
 diff --git a/paths/paths_unix.go b/paths/paths_unix.go
-index 50a8b7ca5..8d9601f61 100644
+index d317921d5..a5e203146 100644
 --- a/paths/paths_unix.go
 +++ b/paths/paths_unix.go
-@@ -30,6 +30,8 @@ func statePath() string {
- 		return "/Library/Tailscale/tailscaled.state"
- 	case "aix":
- 		return "/var/tailscale/tailscaled.state"
-+	case "android":
-+		return "/data/adb/tailscale/tailscaled.state"
- 	default:
- 		return ""
+@@ -26,7 +26,7 @@ func statePath() string {
  	}
+ 	switch runtime.GOOS {
+ 	case "linux", "illumos", "solaris":
+-		return "/var/lib/tailscale/tailscaled.state"
++		return "/data/adb/tailscale/tailscaled.state"
+ 	case "freebsd", "openbsd":
+ 		return "/var/db/tailscale/tailscaled.state"
+ 	case "darwin":
 diff --git a/version/version_checkformat.go b/version/version_checkformat.go
 index 05a97d191..8bc49888f 100644
 --- a/version/version_checkformat.go
