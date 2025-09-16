@@ -12,6 +12,47 @@ index 532bded94..eceb6be27 100644
  buildwasm: ## Build tailscale CLI for js/wasm
  	GOOS=js GOARCH=wasm ./tool/go install ./cmd/tsconnect/wasm ./cmd/tailscale/cli
  
+diff --git a/net/netmon/netmon_linux.go b/net/netmon/netmon_linux.go
+index a1077c257..6b487ec67 100644
+--- a/net/netmon/netmon_linux.go
++++ b/net/netmon/netmon_linux.go
+@@ -1,8 +1,6 @@
+ // Copyright (c) Tailscale Inc & AUTHORS
+ // SPDX-License-Identifier: BSD-3-Clause
+ 
+-//go:build !android
+-
+ package netmon
+ 
+ import (
+diff --git a/net/netmon/netmon_polling.go b/net/netmon/netmon_polling.go
+deleted file mode 100644
+index 3b5ef6fe9..000000000
+--- a/net/netmon/netmon_polling.go
++++ /dev/null
+@@ -1,22 +0,0 @@
+-// Copyright (c) Tailscale Inc & AUTHORS
+-// SPDX-License-Identifier: BSD-3-Clause
+-
+-//go:build (!linux && !freebsd && !windows && !darwin) || android
+-
+-package netmon
+-
+-import (
+-	"tailscale.com/types/logger"
+-	"tailscale.com/util/eventbus"
+-)
+-
+-func newOSMon(_ *eventbus.Bus, logf logger.Logf, m *Monitor) (osMon, error) {
+-	return newPollingMon(logf, m)
+-}
+-
+-// unspecifiedMessage is a minimal message implementation that should not
+-// be ignored. In general, OS-specific implementations should use better
+-// types and avoid this if they can.
+-type unspecifiedMessage struct{}
+-
+-func (unspecifiedMessage) ignore() bool { return false }
 diff --git a/paths/paths.go b/paths/paths.go
 index 6c9c3fa6c..47a5c6fe6 100644
 --- a/paths/paths.go
@@ -60,3 +101,51 @@ index 05a97d191..8bc49888f 100644
 +		return
  	}
  }
+diff --git a/wgengine/router/router_android.go b/wgengine/router/router_android.go
+deleted file mode 100644
+index de680606f..000000000
+--- a/wgengine/router/router_android.go
++++ /dev/null
+@@ -1,30 +0,0 @@
+-// Copyright (c) Tailscale Inc & AUTHORS
+-// SPDX-License-Identifier: BSD-3-Clause
+-
+-//go:build android
+-
+-package router
+-
+-import (
+-	"github.com/tailscale/wireguard-go/tun"
+-	"tailscale.com/health"
+-	"tailscale.com/net/netmon"
+-	"tailscale.com/types/logger"
+-	"tailscale.com/util/eventbus"
+-)
+-
+-func newUserspaceRouter(logf logger.Logf, tunDev tun.Device, netMon *netmon.Monitor, health *health.Tracker, _ *eventbus.Bus) (Router, error) {
+-	// Note, this codepath is _not_ used when building the android app
+-	// from github.com/tailscale/tailscale-android. The android app
+-	// constructs its own wgengine with a custom router implementation
+-	// that plugs into Android networking APIs.
+-	//
+-	// In practice, the only place this fake router gets used is when
+-	// you build a tsnet app for android, in which case we don't want
+-	// to touch the OS network stack and a no-op router is correct.
+-	return NewFake(logf), nil
+-}
+-
+-func cleanUp(logf logger.Logf, interfaceName string) {
+-	// Nothing to do here.
+-}
+diff --git a/wgengine/router/router_linux.go b/wgengine/router/router_linux.go
+index 2382e87cd..7554af096 100644
+--- a/wgengine/router/router_linux.go
++++ b/wgengine/router/router_linux.go
+@@ -1,7 +1,6 @@
+ // Copyright (c) Tailscale Inc & AUTHORS
+ // SPDX-License-Identifier: BSD-3-Clause
+ 
+-//go:build !android
+ 
+ package router
+ 
