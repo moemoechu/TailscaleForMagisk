@@ -26,9 +26,9 @@ jobs:
           git config --global user.email "build@github.com"
           git config --global user.name "build"
           git add -A && git commit -m "commit"
-          make buildlinuxarm
-          cp /home/runner/go/bin/linux_arm/tailscale ../TailscaleForMagisk/src
-          cp /home/runner/go/bin/linux_arm/tailscaled ../TailscaleForMagisk/src
+          make buildandroid
+          cp /home/runner/go/bin/android_arm64/tailscale ../TailscaleForMagisk/src
+          cp /home/runner/go/bin/android_arm64/tailscaled ../TailscaleForMagisk/src
           cd ..
       - name: Update version and versionCode
         run: |
