@@ -1,22 +1,22 @@
 diff --git a/Makefile b/Makefile
-index 30ac5327a..f6f240ed3 100644
+index 532bded94..eceb6be27 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -43,6 +43,9 @@ build386: ## Build tailscale CLI for linux/386
+@@ -50,6 +50,9 @@ build386: ## Build tailscale CLI for linux/386
  buildlinuxarm: ## Build tailscale CLI for linux/arm
  	GOOS=linux GOARCH=arm ./tool/go install tailscale.com/cmd/tailscale tailscale.com/cmd/tailscaled
  
 +buildandroid: ## Build tailscale CLI for android/arm
-+	GOOS=android GOARCH=arm64 ./tool/go install tailscale.com/cmd/tailscale tailscale.com/cmd/tailscaled
++	GOOS=android GOARCH=arm64 ./tool/go install -tags=ts_omit_systray tailscale.com/cmd/tailscale tailscale.com/cmd/tailscaled
 +
  buildwasm: ## Build tailscale CLI for js/wasm
  	GOOS=js GOARCH=wasm ./tool/go install ./cmd/tsconnect/wasm ./cmd/tailscale/cli
  
 diff --git a/paths/paths.go b/paths/paths.go
-index 28c3be02a..6c28e0bc0 100644
+index 6c9c3fa6c..47a5c6fe6 100644
 --- a/paths/paths.go
 +++ b/paths/paths.go
-@@ -30,6 +30,9 @@ func DefaultTailscaledSocket() string {
+@@ -31,6 +31,9 @@ func DefaultTailscaledSocket() string {
  	if runtime.GOOS == "plan9" {
  		return "/srv/tailscaled.sock"
  	}
@@ -27,10 +27,10 @@ index 28c3be02a..6c28e0bc0 100644
  	case distro.Synology:
  		if distro.DSMVersion() == 6 {
 diff --git a/paths/paths_unix.go b/paths/paths_unix.go
-index 50a8b7ca5..8d9601f61 100644
+index d317921d5..5ae66391a 100644
 --- a/paths/paths_unix.go
 +++ b/paths/paths_unix.go
-@@ -30,6 +30,8 @@ func statePath() string {
+@@ -33,6 +33,8 @@ func statePath() string {
  		return "/Library/Tailscale/tailscaled.state"
  	case "aix":
  		return "/var/tailscale/tailscaled.state"
